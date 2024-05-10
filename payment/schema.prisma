@@ -1,0 +1,19 @@
+datasource db {
+  provider = "mongodb"
+  url      = "mongodb+srv://otnasussuga:Otnasus180800@helperior.e36hcqk.mongodb.net/helperior"
+}
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+model Transaction {
+  id    String @id @default(auto()) @map("_id") @db.ObjectId
+  accountId   String
+  amount      Float
+  currency    String
+  toAddress   String?
+  status      String  @default("PENDING")
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}

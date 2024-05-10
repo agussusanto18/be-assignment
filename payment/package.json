@@ -1,0 +1,17 @@
+{
+    "name": "payment-manager",
+    "version": "1.0.0",
+    "description": "Payment Manager service",
+    "main": "app.js",
+    "scripts": {
+        "start": "node app.js"
+    },
+    "dependencies": {
+        "@prisma/client": "^3.0.0",
+        "@supabase/supabase-js": "^2.43.1",
+        "fastify": "^3.0.0",
+        "fastify-swagger": "^5.2.0",
+        "mongodb": "^4.1.0",
+        "supertokens-node": "^17.0.7"
+    }
+}
