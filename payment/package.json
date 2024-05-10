@@ -7,10 +7,11 @@
         "start": "node app.js"
     },
     "dependencies": {
+        "@fastify/swagger": "6.0.0",
         "@prisma/client": "^3.0.0",
         "@supabase/supabase-js": "^2.43.1",
+        "dotenv": "^16.4.5",
         "fastify": "^3.0.0",
-        "fastify-swagger": "^5.2.0",
         "mongodb": "^4.1.0",
         "supertokens-node": "^17.0.7"
     }

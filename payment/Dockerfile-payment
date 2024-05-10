@@ -1,6 +1,6 @@
 # Dockerfile-payment
 
-FROM node:18.20-alpine
+FROM node:20.13.1-alpine
 
 # Set working directory
 WORKDIR /app
@@ -16,7 +16,7 @@ COPY . ./
 
 # Expose port 3001
 EXPOSE 3001
-
-RUN npx prisma generate
+# RUN npm i -g prisma
+# RUN npx prisma generate
 
 CMD ["node", "app.js"]

@@ -1,16 +1,15 @@
 // accountApp.js
-
+require('dotenv').config();
 const fastify = require('fastify')({ logger: true });
 const { PrismaClient } = require('@prisma/client');
 const { MongoClient } = require('mongodb');
 const { createClient } = require('@supabase/supabase-js');
 
 const prisma = new PrismaClient();
-const supabase = createClient('https://zcttnclmfownxehjggvf.supabase.co', 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InpjdHRuY2xtZm93bnhlaGpnZ3ZmIiwicm9sZSI6ImFub24iLCJpYXQiOjE3MTUyOTg3NDgsImV4cCI6MjAzMDg3NDc0OH0.Y92rhNtbPJbS0Ihm8q1l8vTNsrOtuY6jXdDZsrKFTb8');
+const supabase = createClient(process.env.SUPEBASE_URL, process.env.SUPEBASE_API_KEY);
 
 // MongoDB connection URL
-// const mongoURL = 'mongodb://localhost:27017';
-const mongoURL = "mongodb+srv://otnasussuga:Otnasus180800@helperior.e36hcqk.mongodb.net/?retryWrites=true&w=majority&appName=Helperior";
+const mongoURL = process.env.MONGO_URI;
 const mongoClient = new MongoClient(mongoURL);
 
 // Connect to MongoDB

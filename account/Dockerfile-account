@@ -1,7 +1,7 @@
 # Dockerfile-account
 
 # Use official Node.js image as base
-FROM node:18.20-alpine
+FROM node:20.13.1-alpine
 
 # Set working directory
 WORKDIR /app
@@ -18,7 +18,8 @@ COPY . ./
 # Expose port 3000
 EXPOSE 3000
 
-RUN prisma generate
+# RUN npm i -g prisma
+# RUN npx prisma generate
 
 # Command to run the application
 CMD ["node", "app.js"]
