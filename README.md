@@ -21,6 +21,17 @@ Before installing and running the services, ensure that your system meets the fo
     ```bash
     cd <project_directory>
     ```
+3. Create a `.env` file in the root directory of the project. Add the following environment variables to the `.env` file:
+
+    ```plaintext
+    SUPEBASE_URL=<Supabase_URL>
+    SUPEBASE_API_KEY=<Supabase_API_KEY>
+    MONGO_URI_PAYMENT=<MongoDB_URI_FOR_PAYMENT>
+    MONGO_URI_ACCOUNT=<MongoDB_URI_FOR_ACCOUNT>
+    ```
+
+    Replace `<Supabase_URL>`, `<Supabase_API_KEY>`, `<MongoDB_URI_FOR_PAYMENT>`, and `<MongoDB_URI_FOR_ACCOUNT>`  with your actual Supabase URL, Supabase API key, and MongoDB URI respectively.
+
 
 3. Build and run the Docker containers for both services:
 

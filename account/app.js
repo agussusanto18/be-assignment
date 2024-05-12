@@ -14,7 +14,7 @@ const { authenticate } = require('./middlewares');
         fastify.addHook('preHandler', authenticate);
         fastify.register(routes);
 
-        await fastify.listen(3000);
+        await fastify.listen(3000, '0.0.0.0');
         console.log(`Server listening on ${fastify.server.address().port}`);
     } catch (error) {
         console.error('Error starting server:', error);

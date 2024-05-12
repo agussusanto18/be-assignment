@@ -1,5 +1,6 @@
 account/node_modules
 payment/node_modules
 .DS_Store
+.env
 payment/.env
 account/.env

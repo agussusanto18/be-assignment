@@ -9,10 +9,8 @@ services:
       - '3000:3000'
     depends_on:
       - mongodb
-    environment:
-      - MONGO_URI=mongodb://mongodb:27017/account
-      - SUPEBASE_URL=https://zcttnclmfownxehjggvf.supabase.co
-      - SUPEBASE_API_KEY=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InpjdHRuY2xtZm93bnhlaGpnZ3ZmIiwicm9sZSI6ImFub24iLCJpYXQiOjE3MTUyOTg3NDgsImV4cCI6MjAzMDg3NDc0OH0.Y92rhNtbPJbS0Ihm8q1l8vTNsrOtuY6jXdDZsrKFTb8
+    env_file:
+      - .env
 
   payment-manager:
     build:
@@ -22,10 +20,8 @@ services:
       - '3001:3001'
     depends_on:
       - mongodb
-    environment:
-      - MONGO_URI=mongodb://mongodb:27017/payment
-      - SUPEBASE_URL=https://zcttnclmfownxehjggvf.supabase.co
-      - SUPEBASE_API_KEY=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InpjdHRuY2xtZm93bnhlaGpnZ3ZmIiwicm9sZSI6ImFub24iLCJpYXQiOjE3MTUyOTg3NDgsImV4cCI6MjAzMDg3NDc0OH0.Y92rhNtbPJbS0Ihm8q1l8vTNsrOtuY6jXdDZsrKFTb8
+    env_file:
+      - .env
 
   mongodb:
     image: mongo 
