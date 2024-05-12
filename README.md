@@ -61,8 +61,8 @@ To access the Swagger documentation for the Payment Service API, visit the follo
 <img src="img/ss2.png" alt="Screenshot" height="300">
 
 ### Live Demo API
-    - [http://100.27.230.100:3000/documentation/](http://100.27.230.100:3000/documentation/)
-    - [http://100.27.230.100:3001/documentation/](http://100.27.230.100:3001/documentation/)
+- [http://100.27.230.100:3000/documentation/](http://100.27.230.100:3000/documentation/)
+- [http://100.27.230.100:3001/documentation/](http://100.27.230.100:3001/documentation/)
 
 
 # Manual Installation
@@ -124,7 +124,7 @@ To access the Swagger documentation for the Account Service API, visit the follo
 <img src="img/ss1.png" alt="Screenshot" height="300">
 
 ### Live Demo API
-    - [http://100.27.230.100:3000/documentation/](http://100.27.230.100:3000/documentation/)
+[http://100.27.230.100:3000/documentation/](http://100.27.230.100:3000/documentation/)
 
 
 ## Payment Service
@@ -184,4 +184,4 @@ To access the Swagger documentation for the Payment Service API, visit the follo
 <img src="img/ss2.png" alt="Screenshot" height="300">
 
 ### Live Demo API
-    - [http://100.27.230.100:3001/documentation/](http://100.27.230.100:3001/documentation/)
+[http://100.27.230.100:3001/documentation/](http://100.27.230.100:3001/documentation/)
