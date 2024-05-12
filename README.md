@@ -1,3 +1,12 @@
+# System Requirements
+
+Before installing and running the services, ensure that your system meets the following requirements:
+
+- Node.js: Version 18.x or higher
+- npm (Node Package Manager): Version 8.x or higher
+- Docker Engine
+- Docker Compose
+
 # Docker Compose Installation
 
 ## Installation
@@ -30,12 +39,15 @@ To access the Swagger documentation for the Account Service API, visit the follo
 
 [http://localhost:3000/documentation](http://localhost:3000/documentation)
 
+<img src="img/ss1.png" alt="Screenshot" height="300">
+
 ### Payment Service
 
 To access the Swagger documentation for the Payment Service API, visit the following link:
 
 [http://localhost:3001/documentation](http://localhost:3001/documentation)
 
+<img src="img/ss2.png" alt="Screenshot" height="300">
 
 # Manual Installation
 
@@ -82,7 +94,7 @@ The Account Service is responsible for managing user accounts, including registr
 1. Start the Account Service:
 
     ```bash
-    node app
+    npm start
     ```
 
 2. The Account Service will start running at `http://localhost:3000`.
@@ -93,6 +105,7 @@ To access the Swagger documentation for the Account Service API, visit the follo
 
 [http://localhost:3000/documentation](http://localhost:3000/documentation)
 
+<img src="img/ss1.png" alt="Screenshot" height="300">
 
 
 ## Payment Service
@@ -148,3 +161,5 @@ The Payment Service is responsible for processing and managing transactions.
 To access the Swagger documentation for the Payment Service API, visit the following link:
 
 [http://localhost:3001/documentation](http://localhost:3001/documentation)
+
+<img src="img/ss2.png" alt="Screenshot" height="300">
