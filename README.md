@@ -1,57 +1,150 @@
-# Take home assignment
+# Docker Compose Installation
+
+## Installation
+1. Clone the repository:
+
+    ```bash
+    git clone <repository_url>
+    ```
+
+2. Navigate to the root directory of the project:
+
+    ```bash
+    cd <project_directory>
+    ```
+
+3. Build and run the Docker containers for both services:
+
+    ```bash
+    docker-compose up
+    ```
+
+4. The Account Service will start running at `http://localhost:3000`.
+   The Payment Service will start running at `http://localhost:3001`.
+
+## Swagger Documentation
+
+### Account Service
+
+To access the Swagger documentation for the Account Service API, visit the following link:
+
+[Swagger Account Service API Documentation](http://localhost:3000/documentation)
+
+### Payment Service
+
+To access the Swagger documentation for the Payment Service API, visit the following link:
+
+[Swagger Payment Service API Documentation](http://localhost:3001/documentation)
 
 
-## Description:
-Build 2 Backend services which manages user’s accounts and transactions (send/withdraw). 
+# Manual Installation
 
-In Account Manager service, we have:
-- User: Login with Id/Password
-- Payment Account: One user can have multiple accounts like credit, debit, loan...
-- Payment History: Records of transactions
+## Account Service
 
-In Payment Manager service, we have:
-- Transaction: Include basic information like amount, timestamp, toAddress, status...
-- We have a core transaction process function, that will be executed by `/send` or `/withdraw` API:
+The Account Service is responsible for managing user accounts, including registration, login, and account creation.
 
-```js
-function processTransaction(transaction) {
-    return new Promise((resolve, reject) => {
-        console.log('Transaction processing started for:', transaction);
+### Installation
 
-        // Simulate long running process
-        setTimeout(() => {
-            // After 30 seconds, we assume the transaction is processed successfully
-            console.log('transaction processed for:', transaction);
-            resolve(transaction);
-        }, 30000); // 30 seconds
-    });
-}
+1. Clone the repository:
 
-// Example usage
-let transaction = { amount: 100, currency: 'USD' }; // Sample transaction input
-processTransaction(transaction)
-    .then((processedTransaction) => {
-        console.log('transaction processing completed for:', processedTransaction);
-    })
-    .catch((error) => {
-        console.error('transaction processing failed:', error);
-    });
-```
+    ```bash
+    git clone <repository_url>
+    ```
 
-Features:
-- Users need to register/log in and then be able to call APIs.
-- APIs for 2 operations send/withdraw. Account statements will be updated after the transaction is successful.
-- APIs to retrieve all accounts and transactions per account of the user.
-- Write Swagger docs for implemented APIs (Optional)
+2. Navigate to the `account` directory:
 
-### Tech-stack:
-- Recommend using authentication 3rd party: Supertokens, Supabase...
-- `NodeJs/Golang` for API server (`Fastify/Gin` framework is the best choices)
-- `PostgreSQL/MongoDB` for Database. Recommend using `Prisma` for ORM.
-- `Docker` for containerization. Recommend using `docker-compose` for running containers.
- 
-## Target:
-- Good document/README to describe your implementation.
-- Make sure app functionality works as expected. Run and test it well.
-- Containerized and run the app using Docker.
-- Using `docker-compose` or any automation script to run the app with single command is a plus.
+    ```bash
+    cd account
+    ```
+
+3. Install dependencies:
+
+    ```bash
+    npm install
+    ```
+
+### Configuration
+
+1. Create a `.env` file in the root directory of the `account`.
+
+2. Add the following environment variables to the `.env` file:
+
+    ```plaintext
+    SUPEBASE_URL=<Supabase_URL>
+    SUPEBASE_API_KEY=<Supabase_API_KEY>
+    MONGO_URI=<MongoDB_URI>
+    ```
+
+    Replace `<Supabase_URL>`, `<Supabase_API_KEY>`, and `<MongoDB_URI>` with your actual Supabase URL, Supabase API key, and MongoDB URI respectively.
+
+### Usage
+
+1. Start the Account Service:
+
+    ```bash
+    node app
+    ```
+
+2. The Account Service will start running at `http://localhost:3000`.
+
+### Swagger Documentation
+
+To access the Swagger documentation for the Account Service API, visit the following link:
+
+[Swagger Account Service API Documentation](http://localhost:3000/documentation)
+
+
+
+## Payment Service
+
+The Payment Service is responsible for processing and managing transactions.
+
+### Installation
+
+1. Clone the repository:
+
+    ```bash
+    git clone <repository_url>
+    ```
+
+2. Navigate to the `payment` directory:
+
+    ```bash
+    cd payment
+    ```
+
+3. Install dependencies:
+
+    ```bash
+    npm install
+    ```
+
+### Configuration
+
+1. Create a `.env` file in the root directory of the `payment`.
+
+2. Add the following environment variables to the `.env` file:
+
+    ```plaintext
+    SUPEBASE_URL=<Supabase_URL>
+    SUPEBASE_API_KEY=<Supabase_API_KEY>
+    MONGO_URI=<MongoDB_URI>
+    ```
+
+    Replace `<Supabase_URL>`, `<Supabase_API_KEY>`, and `<MongoDB_URI>` with your actual Supabase URL, Supabase API key, and MongoDB URI respectively.
+
+### Usage
+
+1. Start the Payment Service:
+
+    ```bash
+    npm start
+    ```
+
+2. The Payment Service will start running at `http://localhost:3001`.
+
+### Swagger Documentation
+
+To access the Swagger documentation for the Payment Service API, visit the following link:
+
+[Swagger Payment Service API Documentation](http://localhost:3001/documentation)
