@@ -9,9 +9,8 @@ services:
       - '3000:3000'
     depends_on:
       - mongodb
-      - prisma
     environment:
-      - MONGO_URI=mongodb+srv://otnasussuga:Otnasus180800@helperior.e36hcqk.mongodb.net/helperior
+      - MONGO_URI=mongodb://mongodb:27017/account
       - SUPEBASE_URL=https://zcttnclmfownxehjggvf.supabase.co
       - SUPEBASE_API_KEY=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InpjdHRuY2xtZm93bnhlaGpnZ3ZmIiwicm9sZSI6ImFub24iLCJpYXQiOjE3MTUyOTg3NDgsImV4cCI6MjAzMDg3NDc0OH0.Y92rhNtbPJbS0Ihm8q1l8vTNsrOtuY6jXdDZsrKFTb8
 
@@ -23,32 +22,11 @@ services:
       - '3001:3001'
     depends_on:
       - mongodb
-      - prisma
     environment:
-      - MONGO_URI=mongodb+srv://otnasussuga:Otnasus180800@helperior.e36hcqk.mongodb.net/helperior
+      - MONGO_URI=mongodb://mongodb:27017/payment
       - SUPEBASE_URL=https://zcttnclmfownxehjggvf.supabase.co
       - SUPEBASE_API_KEY=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InpjdHRuY2xtZm93bnhlaGpnZ3ZmIiwicm9sZSI6ImFub24iLCJpYXQiOjE3MTUyOTg3NDgsImV4cCI6MjAzMDg3NDc0OH0.Y92rhNtbPJbS0Ihm8q1l8vTNsrOtuY6jXdDZsrKFTb8
 
   mongodb:
-    image: mongo
-    ports:
-      - '27017:27017'
-
-  prisma:
-    image: prismagraphql/prisma:1.34.9-gatsby
-    ports:
-      - '4466:4466'
-    environment:
-      PRISMA_CONFIG: |
-        port: 4466
-        databases:
-          default:
-            connector: mongo
-            uri: mongodb://mongodb:27017/default
-            previewFeatures:
-              - migrations
-    volumes:
-      - prisma-data:/prisma
-
-volumes:
-  prisma-data:
+    image: mongo 
+    restart: unless-stopped

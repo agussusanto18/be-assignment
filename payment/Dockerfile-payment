@@ -16,7 +16,5 @@ COPY . ./
 
 # Expose port 3001
 EXPOSE 3001
-# RUN npm i -g prisma
-# RUN npx prisma generate
 
 CMD ["node", "app.js"]

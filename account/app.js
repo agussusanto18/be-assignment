@@ -1,24 +1,27 @@
 // accountApp.js
 require('dotenv').config();
 const fastify = require('fastify')({ logger: true });
-const { PrismaClient } = require('@prisma/client');
-const { MongoClient } = require('mongodb');
+const mongoose = require('mongoose');
 const { createClient } = require('@supabase/supabase-js');
 
-const prisma = new PrismaClient();
 const supabase = createClient(process.env.SUPEBASE_URL, process.env.SUPEBASE_API_KEY);
 
 // MongoDB connection URL
 const mongoURL = process.env.MONGO_URI;
-const mongoClient = new MongoClient(mongoURL);
 
-// Connect to MongoDB
-mongoClient.connect((err) => {
-    if (err) {
-        console.error('Failed to connect to MongoDB');
-        process.exit(1);
-    }
-    console.log('Connected to MongoDB');
+const connectDB = async () => {
+    await mongoose.connect(mongoURL);
+    console.log('MongoDb Connected');
+}
+
+connectDB();
+
+const Account = mongoose.model('Account', {
+    type: String,
+    balance: { type: Number, default: 0 },
+    userId: String,
+    createdAt: { type: Date, default: Date.now },
+    updatedAt: { type: Date, default: Date.now }
 });
 
 const authenticate = async (request, reply) => {
@@ -122,13 +125,12 @@ fastify.post('/accounts', async (request, reply) => {
     try {
         const { accountType } = request.body;
         
-        const newAccount = await prisma.account.create({
-            data: {
-                userId: request.user.id,
-                type: accountType,
-                balance: 0
-            }
+        const newAccount = new Account({
+            userId: request.user.id,
+            type: accountType,
         });
+
+        await newAccount.save();
 
         reply.send(newAccount);
     } catch (error) {
@@ -138,14 +140,11 @@ fastify.post('/accounts', async (request, reply) => {
 
 fastify.get('/accounts', async (request, reply) => {
     try {
-        const accounts = await prisma.account.findMany({
-            where: {
-                userId: request.user.id,
-            },
-        });
+        const accounts = await Account.find({ userId: request.user.id });
 
         reply.send(accounts);
     } catch (error) {
+        console.log(error);
         reply.status(500).send({ error: 'Failed to retrieve user accounts' });
     }
 });

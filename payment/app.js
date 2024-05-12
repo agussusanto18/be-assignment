@@ -1,29 +1,33 @@
-// accountApp.js
+const Fastify = require('fastify'); 
 require('dotenv').config();
-const fastify = require('fastify')({ logger: true });
-const { PrismaClient } = require('@prisma/client');
-const { MongoClient } = require('mongodb');
 const { createClient } = require('@supabase/supabase-js');
+const mongoose = require('mongoose');
 
-const prisma = new PrismaClient();
 const supabase = createClient(process.env.SUPEBASE_URL, process.env.SUPEBASE_API_KEY);
 
 // MongoDB connection URL
 const mongoURL = process.env.MONGO_URI;
-const mongoClient = new MongoClient(mongoURL);
 
-// Connect to MongoDB
-mongoClient.connect((err) => {
-    if (err) {
-        console.error('Failed to connect to MongoDB');
-        process.exit(1);
-    }
-    console.log('Connected to MongoDB');
+const connectDB = async () => {
+    await mongoose.connect(mongoURL);
+    console.log('MongoDb Connected');
+}
+
+connectDB();
+
+const Transaction = mongoose.model('Transaction', {
+    accountId: String,
+    amount: Number,
+    currency: String,
+    toAddress: String,
+    status: { type: String, default: 'PENDING' },
+    createdAt: { type: Date, default: Date.now },
+    updatedAt: { type: Date, default: Date.now }
 });
 
 const authenticate = async (request, reply) => {
     try {
-        if (request.url === '/docs') {
+        if (request.url.includes('/documentation')) {
             return;
         } else {
             const token = request.headers.authorization;
@@ -44,13 +48,12 @@ const authenticate = async (request, reply) => {
     }
 };
 
-fastify.addHook('preHandler', authenticate);
+
 
 function processTransaction(transaction) {
     return new Promise((resolve, reject) => {
         console.log('Transaction processing started for:', transaction);
-
-        // Simulate long running process
+        
         setTimeout(() => {
             // After 30 seconds, we assume the transaction is processed successfully
             console.log('transaction processed for:', transaction);
@@ -59,80 +62,224 @@ function processTransaction(transaction) {
     });
 }
 
-fastify.post('/send', async (request, reply) => {
-    try {
-        const { accountId, amount, toAddress } = request.body;
-        const transaction = await prisma.transaction.create({
-            data: {
-                accountId,
-                amount,
-                currency: 'IDR',
-                toAddress,
-                status: 'pending'
-            },
-        });
-
-        await processTransaction(transaction);
-        
-        await prisma.transaction.update({
-            where: { id: transaction.id },
-            data: { status: 'completed' },
-        });
-        reply.send({ message: 'Transaction completed successfully' });
-    } catch (error) {
-        reply.status(500).send({ error: 'Failed to process transaction' });
-    }
-});
-
-fastify.post('/withdraw', async (request, reply) => {
-    try {
-        const { accountId, amount } = request.body;
-        const transaction = await prisma.transaction.create({
-            data: {
-                accountId,
-                amount: -amount, 
-                currency: 'IDR',
-                status: 'pending',
-            },
-        });
-        await processTransaction(transaction);
-        
-        await prisma.transaction.update({
-            where: { id: transaction.id },
-            data: { status: 'completed' },
-        });
-        reply.send({ message: 'Withdrawal completed successfully' });
-    } catch (error) {
-        reply.status(500).send({ error: 'Failed to process withdrawal' });
-    }
-});
-
-fastify.get('/transactions/:accountId', async (request, reply) => {
-    try {
-        const { accountId } = request.params;
-
-        const transactions = await prisma.transaction.findMany({
-            where: {
-                accountId: accountId
+(async () => {
+        const fastify = Fastify({
+            logger: true,
+            ajv: {
+                customOptions: {
+                    keywords: ['collectionFormat']
+                }
             }
         });
 
-        reply.send(transactions);
-    } catch (error) {
-        console.log(error);
-        reply.status(500).send({ error: 'Failed to retrieve transaction history' });
-    }
-});
+        await fastify.addHook('preHandler', authenticate);
 
-// Run the server
-const start = async () => {
-    try {
-        await fastify.listen(3001);
-        fastify.log.info(`Account Manager service listening on ${fastify.server.address().port}`);
-    } catch (error) {
-        fastify.log.error(error);
-        process.exit(1);
-    }
-};
+        await fastify.register(require('@fastify/swagger'))
+        await fastify.register(require('@fastify/swagger-ui'), {
+            routePrefix: '/documentation',
+            components: {
+                securitySchemes: {
+                    BearerAuth: {
+                        description:
+                            "RSA256 JWT signed by private key, with username in payload",
+                        type: "http",
+                        scheme: "bearer",
+                        bearerFormat: "JWT",
+                    },
+                },
+            },
+            uiConfig: {
+                docExpansion: 'full',
+                deepLinking: false
+            },
+            uiHooks: {
+                onRequest: function (request, reply, next) { next() },
+                preHandler: function (request, reply, next) { next() }
+            },
+            staticCSP: true,
+            transformStaticCSP: (header) => header,
+            transformSpecification: (swaggerObject, request, reply) => { return swaggerObject },
+            transformSpecificationClone: true
+        })
 
-start();
+        fastify.route({
+            method: 'POST',
+            url: '/transactions/send',
+            schema: {
+                response: {
+                    200: {
+                        type: 'array',
+                        items: {
+                            type: 'object',
+                            properties: {
+                                message: { type: 'string' },
+                            },
+                        },
+                    },
+                    500: {
+                        type: 'object',
+                        properties: {
+                            error: { type: 'string' },
+                        },
+                    },
+                },
+                params: {
+                    type: 'object',
+                    properties: {
+                        accountId: {
+                            type: 'string',
+                            description: 'ID of the account to retrieve transactions for',
+                        },
+                        amount: {
+                            type: 'integer',
+                            description: 'Amount of money to withdraw',
+                        },
+                        toAddress: {
+                            type: 'string',
+                            description: 'ID of the account to send transactions to',
+                        },
+                    },
+                    required: ['accountId', 'amount', 'toAddress'],
+                },
+            },
+            tags: ['transactions'],
+            async handler(request, reply) {
+                try {
+                    const { accountId, amount, toAddress } = request.body;
+                    const transaction = new Transaction({
+                        accountId,
+                        amount,
+                        currency: 'IDR',
+                        toAddress,
+                    });
+
+                    await transaction.save();
+
+                    await processTransaction(transaction);
+
+                    transaction.status = 'completed';
+                    await transaction.save();
+
+                    reply.send({ message: 'Transaction completed successfully' });
+                } catch (error) {
+                    reply.status(500).send({ error: 'Failed to process transaction' });
+                }
+            },
+        });
+
+        fastify.route({
+            method: 'POST',
+            url: '/transactions/withdraw',
+            schema: {
+                response: {
+                    200: {
+                        type: 'array',
+                        items: {
+                            type: 'object',
+                            properties: {
+                                message: { type: 'string' },
+                            },
+                        },
+                    },
+                    500: {
+                        type: 'object',
+                        properties: {
+                            error: { type: 'string' },
+                        },
+                    },
+                },
+                params: {
+                    type: 'object',
+                    properties: {
+                        accountId: {
+                            type: 'string',
+                            description: 'ID of the account to retrieve transactions for',
+                        },
+                        amount: {
+                            type: 'integer',
+                            description: 'Amount of money to withdraw',
+                        },
+                    },
+                    required: ['accountId', 'amount'],
+                },
+            },
+            tags: ['transactions'],
+            async handler(request, reply) {
+                try {
+                    const { accountId, amount } = request.body;
+                    const transaction = new Transaction({
+                        accountId,
+                        amount: -amount,
+                        currency: 'IDR',
+                    });
+
+                    await transaction.save();
+
+                    await processTransaction(transaction);
+
+                    transaction.status = 'completed';
+                    await transaction.save();
+
+                    reply.send({ message: 'Withdrawal completed successfully' });
+                } catch (error) {
+                    reply.status(500).send({ error: 'Failed to process withdrawal' });
+                }
+            },
+        });
+
+
+        fastify.route({
+            method: 'GET',
+            url: '/transactions/retrieve/:accountId',
+            schema: {
+                response: {
+                    200: {
+                        type: 'array',
+                        items: {
+                            type: 'object',
+                            properties: {
+                                id: { type: 'string' },
+                                accountId: { type: 'string' },
+                            },
+                        },
+                    },
+                    500: {
+                        type: 'object',
+                        properties: {
+                            error: { type: 'string' },
+                        },
+                    },
+                },
+                params: {
+                    type: 'object',
+                    properties: {
+                        accountId: {
+                            type: 'string',
+                            description: 'ID of the account to retrieve transactions for',
+                        },
+                    },
+                    required: ['accountId'],
+                },
+            },
+            tags: ['transactions'],
+            async handler(request, reply) {
+                try {
+                    const { accountId } = request.params;
+
+                    const transactions = await Transaction.find({ accountId });
+
+                    reply.send(transactions);
+                } catch (error) {
+                    console.log(error);
+                    reply.status(500).send({ error: 'Failed to retrieve transaction history' });
+                }
+            },
+        });
+
+
+        fastify.listen({ port: 3001 }, (err, addr) => {
+            if (err) throw err
+            fastify.log.info(`Payment service listening on ${fastify.server.address().port}`);
+        });
+    }
+    )()
