@@ -28,13 +28,13 @@
 
 To access the Swagger documentation for the Account Service API, visit the following link:
 
-[Swagger Account Service API Documentation](http://localhost:3000/documentation)
+[http://localhost:3000/documentation](http://localhost:3000/documentation)
 
 ### Payment Service
 
 To access the Swagger documentation for the Payment Service API, visit the following link:
 
-[Swagger Payment Service API Documentation](http://localhost:3001/documentation)
+[http://localhost:3001/documentation](http://localhost:3001/documentation)
 
 
 # Manual Installation
@@ -91,7 +91,7 @@ The Account Service is responsible for managing user accounts, including registr
 
 To access the Swagger documentation for the Account Service API, visit the following link:
 
-[Swagger Account Service API Documentation](http://localhost:3000/documentation)
+[http://localhost:3000/documentation](http://localhost:3000/documentation)
 
 
 
@@ -147,4 +147,4 @@ The Payment Service is responsible for processing and managing transactions.
 
 To access the Swagger documentation for the Payment Service API, visit the following link:
 
-[Swagger Payment Service API Documentation](http://localhost:3001/documentation)
+[http://localhost:3001/documentation](http://localhost:3001/documentation)
